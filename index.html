@@ -141,59 +141,55 @@
         <!-- 專案區域 -->
         <section id="projects" class="projects">
             <div class="container">
-                <h2 class="section-title">精選專案</h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div class="project-content">
-                            <h3>電商平台</h3>
-                            <p>使用 React 和 Node.js 開發的完整電商解決方案，包含購物車、支付系統等功能。</p>
-                            <div class="project-tech">
-                                <span>React</span>
-                                <span>Node.js</span>
-                                <span>MongoDB</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 預覽</a>
-                                <a href="#" class="project-link"><i class="fab fa-github"></i> 程式碼</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-image">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <div class="project-content">
-                            <h3>任務管理系統</h3>
-                            <p>團隊協作任務管理工具，支援即時更新、檔案分享和進度追蹤。</p>
-                            <div class="project-tech">
-                                <span>Vue.js</span>
-                                <span>Express</span>
-                                <span>Socket.io</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 預覽</a>
-                                <a href="#" class="project-link"><i class="fab fa-github"></i> 程式碼</a>
-                            </div>
+                <h2 class="section-title">GitHub 專案</h2>
+                
+                <!-- 載入狀態 -->
+                <div id="projects-loading" class="projects-loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在載入專案...</p>
+                </div>
+                
+                <!-- 錯誤狀態 -->
+                <div id="projects-error" class="projects-error" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>無法載入專案，請稍後再試</p>
+                    <button id="retry-loading" class="btn btn-primary">重新載入</button>
+                </div>
+                
+                <!-- 專案滑動器 -->
+                <div id="projects-container" class="projects-container" style="display: none;">
+                    <div class="projects-slider">
+                        <div id="projects-track" class="projects-track">
+                            <!-- 專案卡片將在這裡動態生成 -->
                         </div>
                     </div>
-                    <div class="project-card">
-                        <div class="project-image">
-                            <i class="fas fa-chart-line"></i>
+                    
+                    <!-- 滑動控制 -->
+                    <div class="slider-controls">
+                        <button id="prev-btn" class="slider-btn prev-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="slider-dots" id="slider-dots">
+                            <!-- 滑動點將在這裡動態生成 -->
                         </div>
-                        <div class="project-content">
-                            <h3>數據分析儀表板</h3>
-                            <p>企業級數據視覺化平台，提供即時數據分析和報表生成功能。</p>
-                            <div class="project-tech">
-                                <span>React</span>
-                                <span>D3.js</span>
-                                <span>Python</span>
-                            </div>
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> 預覽</a>
-                                <a href="#" class="project-link"><i class="fab fa-github"></i> 程式碼</a>
+                        <button id="next-btn" class="slider-btn next-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- README 查看器模態框 -->
+                <div id="readme-modal" class="readme-modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modal-title">專案說明</h3>
+                            <button id="close-modal" class="close-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="readme-content" class="readme-content">
+                                <!-- README 內容將在這裡顯示 -->
                             </div>
                         </div>
                     </div>
