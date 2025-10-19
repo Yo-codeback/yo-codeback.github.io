@@ -548,9 +548,6 @@ function createProjectCard(repo, index) {
                         <i class="fas fa-external-link-alt"></i> 預覽
                     </a>
                 ` : ''}
-/*                 <button class="project-link readme-btn" onclick="showReadme('${repo.name}')">
-                    <i class="fas fa-book"></i> README */
-                </button>
             </div>
         </div>
     `;
@@ -706,113 +703,8 @@ function updateSliderControls() {
     });
 }
 
-// README 查看器功能
-async function showReadme(repoName) {
-    try {
-        const modal = document.getElementById('readme-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const readmeContent = document.getElementById('readme-content');
-        
-        modalTitle.textContent = `${repoName} - README`;
-        readmeContent.innerHTML = '<div class="loading-spinner"></div><p>正在載入 README...</p>';
-        
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        
-        // 獲取 README 內容
-        const response = await fetch(`${GITHUB_API_BASE}/repos/${GITHUB_USERNAME}/${repoName}/readme`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const readmeData = await response.json();
-        const readmeText = atob(readmeData.content);
-        
-        // 將 Markdown 轉換為 HTML
-        const htmlContent = convertMarkdownToHtml(readmeText);
-        readmeContent.innerHTML = htmlContent;
-        
-    } catch (error) {
-        console.error('Error fetching README:', error);
-        document.getElementById('readme-content').innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>無法載入 README 內容</p>
-            </div>
-        `;
-    }
-}
 
-function convertMarkdownToHtml(markdown) {
-    // 簡單的 Markdown 轉 HTML 轉換器
-    let html = markdown
-        // 標題
-        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        
-        // 粗體和斜體
-        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-        .replace(/\*(.*)\*/gim, '<em>$1</em>')
-        
-        // 程式碼塊
-        .replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>')
-        .replace(/`([^`]+)`/gim, '<code>$1</code>')
-        
-        // 連結
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" target="_blank">$1</a>')
-        
-        // 圖片
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/gim, '<img src="$2" alt="$1" />')
-        
-        // 列表
-        .replace(/^\* (.*$)/gim, '<li>$1</li>')
-        .replace(/^- (.*$)/gim, '<li>$1</li>')
-        .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
-        
-        // 引用
-        .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
-        
-        // 水平線
-        .replace(/^---$/gim, '<hr>')
-        
-        // 段落
-        .replace(/\n\n/gim, '</p><p>')
-        .replace(/^(?!<[h|p|l|b|d|i|s|h])(.*$)/gim, '<p>$1</p>');
-    
-    // 包裝列表項目
-    html = html.replace(/(<li>.*<\/li>)/gims, '<ul>$1</ul>');
-    
-    return html;
-}
 
-// 模態框控制
-function setupModalControls() {
-    const modal = document.getElementById('readme-modal');
-    const closeBtn = document.getElementById('close-modal');
-    
-    closeBtn.addEventListener('click', closeModal);
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-    
-    // ESC 鍵關閉模態框
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.style.display === 'block') {
-            closeModal();
-        }
-    });
-}
-
-function closeModal() {
-    const modal = document.getElementById('readme-modal');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
 
 // 狀態管理
 function showLoadingState() {
@@ -850,7 +742,6 @@ window.addEventListener('resize', debounce(() => {
 
 // 初始化 GitHub 功能
 function initGitHubFeatures() {
-    setupModalControls();
     setupRetryButton();
     fetchGitHubRepos();
 }
