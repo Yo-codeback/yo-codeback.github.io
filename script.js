@@ -548,8 +548,8 @@ function createProjectCard(repo, index) {
                         <i class="fas fa-external-link-alt"></i> 預覽
                     </a>
                 ` : ''}
-                <button class="project-link readme-btn" onclick="showReadme('${repo.name}')">
-                    <i class="fas fa-book"></i> README
+/*                 <button class="project-link readme-btn" onclick="showReadme('${repo.name}')">
+                    <i class="fas fa-book"></i> README */
                 </button>
             </div>
         </div>
