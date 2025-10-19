@@ -463,6 +463,19 @@ main {
     opacity: 0.8;
 }
 
+.language-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
 .project-content {
     padding: 2rem;
 }
@@ -486,6 +499,7 @@ main {
     line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -493,9 +507,26 @@ main {
 .project-stats {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     font-size: 0.9rem;
     color: #666;
+    flex-wrap: wrap;
+}
+
+.project-meta {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.update-time {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.update-time i {
+    color: #3498db;
 }
 
 .project-stat {
@@ -522,6 +553,12 @@ main {
     border-radius: 15px;
     font-size: 0.8rem;
     font-weight: 500;
+}
+
+.project-tech .main-language {
+    background: #3498db;
+    color: white;
+    font-weight: 600;
 }
 
 .project-links {
@@ -560,6 +597,17 @@ main {
 .readme-btn:hover {
     background: #e67e22;
     border-color: #e67e22;
+}
+
+.live-btn {
+    background: #27ae60;
+    color: white;
+    border: 1px solid #27ae60;
+}
+
+.live-btn:hover {
+    background: #229954;
+    border-color: #229954;
 }
 
 /* 滑動控制 */
@@ -805,10 +853,11 @@ main {
 }
 
 .contact-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .contact-info h3 {
@@ -821,18 +870,51 @@ main {
     color: #666;
     margin-bottom: 2rem;
     line-height: 1.8;
+    text-align: center;
+}
+
+.contact-cta {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.contact-cta p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .contact-methods {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .contact-method {
     display: flex;
     align-items: center;
     gap: 1rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.contact-method:hover {
+    transform: translateY(-5px);
 }
 
 .contact-method i {
@@ -1054,8 +1136,17 @@ main {
     }
 
     .contact-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+        padding: 0 1rem;
+    }
+    
+    .contact-methods {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
     }
 
     .social-grid {

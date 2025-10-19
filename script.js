@@ -83,35 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
         item.style.animationDelay = `${index * 0.1}s`;
     });
 
-    // 表單提交處理
-    const contactForm = document.querySelector('.contact-form form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // 獲取表單數據
-            const formData = new FormData(this);
-            const name = this.querySelector('input[type="text"]').value;
-            const email = this.querySelector('input[type="email"]').value;
-            const subject = this.querySelectorAll('input[type="text"]')[1].value;
-            const message = this.querySelector('textarea').value;
-
-            // 簡單驗證
-            if (!name || !email || !subject || !message) {
-                showNotification('請填寫所有必填欄位', 'error');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showNotification('請輸入有效的電子郵件地址', 'error');
-                return;
-            }
-
-            // 模擬發送（實際應用中需要連接到後端）
-            showNotification('訊息發送成功！我會盡快回覆您。', 'success');
-            this.reset();
-        });
-    }
 
     // 專案卡片懸停效果
     const projectCards = document.querySelectorAll('.project-card');
@@ -192,10 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 輔助函數
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
 
 function showNotification(message, type = 'info') {
     // 創建通知元素
@@ -385,17 +352,28 @@ async function fetchGitHubRepos() {
         
         const repos = await response.json();
         
-        // 過濾掉 fork 的倉庫（可選）
-        const filteredRepos = repos.filter(repo => !repo.fork);
+        // 過濾掉 fork 的倉庫和特定倉庫
+        const filteredRepos = repos.filter(repo => {
+            return !repo.fork && 
+                   !repo.name.includes('yo-codeback.github.io') && // 排除這個網站本身
+                   repo.name !== '.github' && // 排除 GitHub 配置倉庫
+                   repo.description; // 只顯示有描述的專案
+        });
         
-        // 按星數和更新時間排序
+        // 按星數、更新時間和大小排序
         filteredRepos.sort((a, b) => {
-            const scoreA = a.stargazers_count * 2 + (new Date(a.updated_at).getTime() / 1000000);
-            const scoreB = b.stargazers_count * 2 + (new Date(b.updated_at).getTime() / 1000000);
+            const scoreA = (a.stargazers_count * 3) + 
+                          (a.forks_count * 2) + 
+                          (new Date(a.updated_at).getTime() / 1000000) +
+                          (a.size / 1000); // 專案大小作為加分項
+            const scoreB = (b.stargazers_count * 3) + 
+                          (b.forks_count * 2) + 
+                          (new Date(b.updated_at).getTime() / 1000000) +
+                          (b.size / 1000);
             return scoreB - scoreA;
         });
         
-        projects = filteredRepos.slice(0, 10); // 只顯示前10個專案
+        projects = filteredRepos.slice(0, 12); // 顯示前12個專案
         totalSlides = Math.ceil(projects.length / getSlidesPerView());
         
         renderProjects();
@@ -436,11 +414,24 @@ function createProjectCard(repo, index) {
     // 獲取語言顏色
     const languageColor = getLanguageColor(repo.language);
     
+    // 格式化更新時間
+    const updatedDate = new Date(repo.updated_at);
+    const timeAgo = getTimeAgo(updatedDate);
+    
+    // 獲取專案大小
+    const sizeKB = Math.round(repo.size / 1024);
+    const sizeText = sizeKB > 1024 ? `${Math.round(sizeKB / 1024)}MB` : `${sizeKB}KB`;
+    
+    // 檢查是否有 GitHub Pages
+    const hasPages = repo.has_pages;
+    const liveUrl = hasPages ? `https://${GITHUB_USERNAME}.github.io/${repo.name}` : null;
+    
     card.innerHTML = `
         <div class="project-image" style="background: ${languageColor}">
             <div class="project-icon">
                 <i class="fab fa-github"></i>
             </div>
+            ${repo.language ? `<div class="language-badge">${repo.language}</div>` : ''}
         </div>
         <div class="project-content">
             <h3>
@@ -451,27 +442,42 @@ function createProjectCard(repo, index) {
                 ${repo.description || '沒有描述'}
             </p>
             <div class="project-stats">
-                <div class="project-stat">
+                <div class="project-stat" title="星數">
                     <i class="fas fa-star"></i>
                     <span>${repo.stargazers_count}</span>
                 </div>
-                <div class="project-stat">
+                <div class="project-stat" title="分支數">
                     <i class="fas fa-code-branch"></i>
                     <span>${repo.forks_count}</span>
                 </div>
-                <div class="project-stat">
+                <div class="project-stat" title="觀看數">
                     <i class="fas fa-eye"></i>
                     <span>${repo.watchers_count}</span>
                 </div>
+                <div class="project-stat" title="專案大小">
+                    <i class="fas fa-weight"></i>
+                    <span>${sizeText}</span>
+                </div>
+            </div>
+            <div class="project-meta">
+                <span class="update-time">
+                    <i class="fas fa-clock"></i>
+                    更新於 ${timeAgo}
+                </span>
             </div>
             <div class="project-tech">
-                ${repo.language ? `<span>${repo.language}</span>` : ''}
-                ${repo.topics ? repo.topics.slice(0, 3).map(topic => `<span>${topic}</span>`).join('') : ''}
+                ${repo.language ? `<span class="main-language">${repo.language}</span>` : ''}
+                ${repo.topics ? repo.topics.slice(0, 4).map(topic => `<span>${topic}</span>`).join('') : ''}
             </div>
             <div class="project-links">
                 <a href="${repo.html_url}" target="_blank" class="project-link">
                     <i class="fab fa-github"></i> 程式碼
                 </a>
+                ${liveUrl ? `
+                    <a href="${liveUrl}" target="_blank" class="project-link live-btn">
+                        <i class="fas fa-external-link-alt"></i> 預覽
+                    </a>
+                ` : ''}
                 <button class="project-link readme-btn" onclick="showReadme('${repo.name}')">
                     <i class="fas fa-book"></i> README
                 </button>
@@ -480,6 +486,30 @@ function createProjectCard(repo, index) {
     `;
     
     return card;
+}
+
+function getTimeAgo(date) {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) {
+        return '剛剛';
+    } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes} 分鐘前`;
+    } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours} 小時前`;
+    } else if (diffInSeconds < 2592000) {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days} 天前`;
+    } else if (diffInSeconds < 31536000) {
+        const months = Math.floor(diffInSeconds / 2592000);
+        return `${months} 個月前`;
+    } else {
+        const years = Math.floor(diffInSeconds / 31536000);
+        return `${years} 年前`;
+    }
 }
 
 function getLanguageColor(language) {
