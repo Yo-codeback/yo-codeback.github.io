@@ -144,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 技能項目點擊效果
-    const skillItems = document.querySelectorAll('.skill-item');
     skillItems.forEach(item => {
         item.addEventListener('click', function() {
             this.style.transform = 'scale(1.1)';
