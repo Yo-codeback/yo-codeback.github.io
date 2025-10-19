@@ -100,17 +100,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const socialLinks = document.querySelectorAll('.social-link');
     socialLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
             // 添加點擊動畫
             this.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 this.style.transform = '';
             }, 150);
 
-            // 這裡可以添加實際的連結跳轉邏輯
-            const platform = this.classList[1]; // 獲取平台名稱
-            showNotification(`即將跳轉到 ${this.querySelector('span').textContent}`, 'info');
+            // 檢查是否有有效的 href 屬性
+            const href = this.getAttribute('href');
+            if (href && href !== '#') {
+                // 如果有有效連結，允許正常跳轉
+                return true;
+            } else {
+                // 如果沒有有效連結，阻止跳轉並顯示通知
+                e.preventDefault();
+                const platform = this.classList[1]; // 獲取平台名稱
+                showNotification(`即將跳轉到 ${this.querySelector('span').textContent}`, 'info');
+            }
         });
     });
 
@@ -163,6 +169,64 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 輔助函數
+function updateProjectStats(totalRepos, filteredRepos) {
+    // 更新關於我區域的統計數據
+    const stats = document.querySelectorAll('.stat');
+    if (stats.length >= 3) {
+        // 更新專案數量統計
+        stats[1].querySelector('h3').textContent = `${filteredRepos}+`;
+        stats[1].querySelector('p').textContent = '完成專案';
+        
+        // 可以添加更多統計資訊
+        console.log(`總倉庫數: ${totalRepos}, 顯示專案數: ${filteredRepos}`);
+    }
+}
+
+async function fetchDetailedStats() {
+    try {
+        // 獲取用戶詳細資訊
+        const userResponse = await fetch(`${GITHUB_API_BASE}/users/${GITHUB_USERNAME}`);
+        if (userResponse.ok) {
+            const userData = await userResponse.json();
+            
+            // 更新統計數據
+            const stats = document.querySelectorAll('.stat');
+            if (stats.length >= 3) {
+                // 更新年開發經驗（從2021年開始）
+                const currentYear = new Date().getFullYear();
+                const startYear = 2021;
+                const yearsOfExperience = currentYear - startYear;
+                stats[0].querySelector('h3').textContent = `${yearsOfExperience}+`;
+                stats[0].querySelector('p').textContent = '年開發經驗';
+                
+                // 更新技術棧數量（基於使用的語言）
+                const languagesResponse = await fetch(`${GITHUB_API_BASE}/users/${GITHUB_USERNAME}/repos?per_page=100`);
+                if (languagesResponse.ok) {
+                    const allRepos = await languagesResponse.json();
+                    const languageCounts = {};
+                    
+                    // 統計每種語言的使用次數
+                    allRepos.forEach(repo => {
+                        if (repo.language) {
+                            languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
+                        }
+                    });
+                    
+                    // 只計算使用次數大於1的語言（表示真正掌握的技術）
+                    const significantLanguages = Object.keys(languageCounts).filter(lang => languageCounts[lang] > 1);
+                    
+                    stats[2].querySelector('h3').textContent = `${significantLanguages.length}+`;
+                    stats[2].querySelector('p').textContent = '技術棧';
+                    
+                    console.log('語言統計:', languageCounts);
+                    console.log('主要技術棧:', significantLanguages);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching detailed stats:', error);
+    }
+}
 
 function showNotification(message, type = 'info') {
     // 創建通知元素
@@ -375,6 +439,12 @@ async function fetchGitHubRepos() {
         
         projects = filteredRepos.slice(0, 12); // 顯示前12個專案
         totalSlides = Math.ceil(projects.length / getSlidesPerView());
+        
+        // 更新統計數據
+        updateProjectStats(repos.length, filteredRepos.length);
+        
+        // 獲取更詳細的統計資訊
+        fetchDetailedStats();
         
         renderProjects();
         setupSliderControls();

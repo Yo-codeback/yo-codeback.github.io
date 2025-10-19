@@ -296,6 +296,33 @@ main {
     font-weight: 500;
 }
 
+.about-location {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.location-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    color: #2c3e50;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+}
+
+.location-info:hover {
+    transform: translateY(-3px);
+}
+
+.location-info i {
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
 /* 技能區域 */
 .skills {
     padding: 5rem 0;
@@ -846,126 +873,6 @@ main {
     font-weight: 600;
 }
 
-/* 聯絡區域 */
-.contact {
-    padding: 5rem 0;
-    background: #f8f9fa;
-}
-
-.contact-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.contact-info h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #2c3e50;
-}
-
-.contact-info p {
-    color: #666;
-    margin-bottom: 2rem;
-    line-height: 1.8;
-    text-align: center;
-}
-
-.contact-cta {
-    text-align: center;
-    margin-top: 2rem;
-    padding: 2rem;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
-
-.contact-cta p {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    color: #2c3e50;
-}
-
-.cta-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.contact-methods {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.contact-method {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.contact-method:hover {
-    transform: translateY(-5px);
-}
-
-.contact-method i {
-    font-size: 1.5rem;
-    color: #3498db;
-    width: 30px;
-}
-
-.contact-method h4 {
-    font-size: 1.1rem;
-    margin-bottom: 0.3rem;
-    color: #2c3e50;
-}
-
-.contact-method p {
-    color: #666;
-    margin: 0;
-}
-
-.contact-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 1rem;
-    border: 2px solid #ecf0f1;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-    font-family: inherit;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #3498db;
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 120px;
-}
 
 /* 個人連結區域 */
 .social-links {
@@ -1135,19 +1042,6 @@ main {
         padding: 1.5rem;
     }
 
-    .contact-content {
-        padding: 0 1rem;
-    }
-    
-    .contact-methods {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .cta-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
 
     .social-grid {
         grid-template-columns: repeat(2, 1fr);
