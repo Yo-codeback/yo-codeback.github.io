@@ -6,12 +6,15 @@ const GITHUB_API_BASE = 'https://api.github.com';
 let currentSlide = 0;
 let totalSlides = 0;
 let projects = [];
+let autoplayTimer = null;
+const AUTOPLAY_INTERVAL_MS = 4000;
 
 // 導航欄功能
 document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.getElementById('nav-toggle');
     const navMenu = document.getElementById('nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
+    const themeToggle = document.getElementById('theme-toggle');
 
     // 手機版選單切換
     navToggle.addEventListener('click', function() {
@@ -30,11 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // 滾動時導航欄效果
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const lightBg = 'rgba(255, 255, 255, 0.95)';
+        const darkBg = 'rgba(21, 27, 35, 0.85)';
         if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            navbar.style.background = isDark ? darkBg : 'rgba(255, 255, 255, 0.98)';
             navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
         } else {
-            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            navbar.style.background = isDark ? darkBg : lightBg;
             navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
         }
     });
@@ -166,6 +173,35 @@ document.addEventListener('DOMContentLoaded', function() {
         // 延遲開始打字機效果
         setTimeout(typeWriter, 1000);
     }
+
+    // 主題切換
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = themeToggle?.querySelector('i');
+        if (icon) {
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        // 觸發一次滾動處理，更新 navbar 背景
+        window.dispatchEvent(new Event('scroll'));
+    }
+
+    function initTheme() {
+        const saved = localStorage.getItem('preferred-theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        applyTheme(theme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('preferred-theme', next);
+            applyTheme(next);
+        });
+    }
+
+    initTheme();
 });
 
 // 輔助函數
@@ -438,6 +474,10 @@ async function fetchGitHubRepos() {
         });
         
         projects = filteredRepos.slice(0, 12); // 顯示前12個專案
+        if (projects.length === 0) {
+            showEmptyState();
+            return;
+        }
         totalSlides = Math.ceil(projects.length / getSlidesPerView());
         
         // 更新統計數據
@@ -457,11 +497,8 @@ async function fetchGitHubRepos() {
 }
 
 function getSlidesPerView() {
-    const width = window.innerWidth;
-    if (width < 480) return 1;
-    if (width < 768) return 1;
-    if (width < 1024) return 2;
-    return 3;
+    // 每頁顯示一個
+    return 1;
 }
 
 function renderProjects() {
@@ -496,6 +533,13 @@ function createProjectCard(repo, index) {
     const hasPages = repo.has_pages;
     const liveUrl = hasPages ? `https://${GITHUB_USERNAME}.github.io/${repo.name}` : null;
     
+    const homepageBadge = repo.homepage ? `<span class="meta-badge"><i class='fas fa-home'></i> 首頁</span>` : '';
+    const licenseBadge = repo.license && repo.license.spdx_id ? `<span class="meta-badge"><i class='fas fa-scale-balanced'></i> ${repo.license.spdx_id}</span>` : '';
+    const topicsHtml = repo.topics ? repo.topics.slice(0, 4).map(topic => `<span>${topic}</span>`).join('') : '';
+    const stars = formatNumber(repo.stargazers_count);
+    const forks = formatNumber(repo.forks_count);
+    const watchers = formatNumber(repo.watchers_count);
+
     card.innerHTML = `
         <div class="project-image" style="background: ${languageColor}">
             <div class="project-icon">
@@ -504,25 +548,29 @@ function createProjectCard(repo, index) {
             ${repo.language ? `<div class="language-badge">${repo.language}</div>` : ''}
         </div>
         <div class="project-content">
-            <h3>
-                <i class="fab fa-github repo-icon"></i>
-                ${repo.name}
-            </h3>
+            <div class="project-header">
+                <img class="owner-avatar" src="https://avatars.githubusercontent.com/u/${repo.owner?.id || ''}?s=64" alt="avatar" loading="lazy" />
+                <h3>
+                    <i class="fab fa-github repo-icon"></i>
+                    ${repo.name}
+                </h3>
+            </div>
+            <div class="meta-badges">${homepageBadge}${licenseBadge}</div>
             <p class="project-description">
                 ${repo.description || '沒有描述'}
             </p>
             <div class="project-stats">
                 <div class="project-stat" title="星數">
                     <i class="fas fa-star"></i>
-                    <span>${repo.stargazers_count}</span>
+                    <span>${stars}</span>
                 </div>
                 <div class="project-stat" title="分支數">
                     <i class="fas fa-code-branch"></i>
-                    <span>${repo.forks_count}</span>
+                    <span>${forks}</span>
                 </div>
                 <div class="project-stat" title="觀看數">
                     <i class="fas fa-eye"></i>
-                    <span>${repo.watchers_count}</span>
+                    <span>${watchers}</span>
                 </div>
                 <div class="project-stat" title="專案大小">
                     <i class="fas fa-weight"></i>
@@ -537,7 +585,7 @@ function createProjectCard(repo, index) {
             </div>
             <div class="project-tech">
                 ${repo.language ? `<span class="main-language">${repo.language}</span>` : ''}
-                ${repo.topics ? repo.topics.slice(0, 4).map(topic => `<span>${topic}</span>`).join('') : ''}
+                ${topicsHtml}
             </div>
             <div class="project-links">
                 <a href="${repo.html_url}" target="_blank" class="project-link">
@@ -669,21 +717,33 @@ function setupSliderControls() {
             goToSlide(currentSlide + 1);
         }
     });
+
+    // 懸停暫停/離開繼續
+    const slider = document.querySelector('.projects-slider');
+    if (slider) {
+        slider.addEventListener('mouseenter', stopAutoplay);
+        slider.addEventListener('mouseleave', startAutoplay);
+    }
 }
 
 function goToSlide(slideIndex) {
-    if (slideIndex < 0 || slideIndex >= totalSlides) return;
-    
-    currentSlide = slideIndex;
+    // 循環
+    if (slideIndex < 0) {
+        currentSlide = totalSlides - 1;
+    } else if (slideIndex >= totalSlides) {
+        currentSlide = 0;
+    } else {
+        currentSlide = slideIndex;
+    }
     updateSliderPosition();
     updateSliderControls();
 }
 
 function updateSliderPosition() {
     const track = document.getElementById('projects-track');
-    const slidesPerView = getSlidesPerView();
-    const cardWidth = 350 + 32; // 卡片寬度 + gap
-    const translateX = -currentSlide * slidesPerView * cardWidth;
+    const slider = document.querySelector('.projects-slider');
+    const sliderWidth = slider ? slider.clientWidth : window.innerWidth;
+    const translateX = -currentSlide * sliderWidth;
     
     track.style.transform = `translateX(${translateX}px)`;
 }
@@ -693,9 +753,9 @@ function updateSliderControls() {
     const nextBtn = document.getElementById('next-btn');
     const dots = document.querySelectorAll('.slider-dot');
     
-    // 更新按鈕狀態
-    prevBtn.disabled = currentSlide === 0;
-    nextBtn.disabled = currentSlide === totalSlides - 1;
+    // 循環播放：按鈕永遠可用
+    prevBtn.disabled = false;
+    nextBtn.disabled = false;
     
     // 更新點狀態
     dots.forEach((dot, index) => {
@@ -710,6 +770,7 @@ function updateSliderControls() {
 function showLoadingState() {
     document.getElementById('projects-loading').style.display = 'block';
     document.getElementById('projects-error').style.display = 'none';
+    document.getElementById('projects-empty').style.display = 'none';
     document.getElementById('projects-container').style.display = 'none';
 }
 
@@ -721,6 +782,14 @@ function hideLoadingState() {
 function showErrorState() {
     document.getElementById('projects-loading').style.display = 'none';
     document.getElementById('projects-error').style.display = 'block';
+    document.getElementById('projects-empty').style.display = 'none';
+    document.getElementById('projects-container').style.display = 'none';
+}
+
+function showEmptyState() {
+    document.getElementById('projects-loading').style.display = 'none';
+    document.getElementById('projects-error').style.display = 'none';
+    document.getElementById('projects-empty').style.display = 'block';
     document.getElementById('projects-container').style.display = 'none';
 }
 
@@ -748,3 +817,43 @@ function initGitHubFeatures() {
 
 // 在頁面載入完成後初始化 GitHub 功能
 window.addEventListener('load', initGitHubFeatures);
+
+// 工具：數字縮寫
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return String(num);
+}
+
+// 自動輪播
+function startAutoplay() {
+    stopAutoplay();
+    if (totalSlides <= 1) return;
+    autoplayTimer = setInterval(() => {
+        goToSlide(currentSlide + 1);
+    }, AUTOPLAY_INTERVAL_MS);
+}
+
+function stopAutoplay() {
+    if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+    }
+}
+
+// 在專案渲染完成後啟動
+const originalRenderProjects = renderProjects;
+renderProjects = function() {
+    originalRenderProjects();
+    totalSlides = Math.ceil(projects.length / getSlidesPerView());
+    startAutoplay();
+};
+
+// 頁面可見性改變時暫停/恢復
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        stopAutoplay();
+    } else {
+        startAutoplay();
+    }
+});

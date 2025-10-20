@@ -11,7 +11,7 @@
 <body>
     <!-- 導航欄 -->
     <nav class="navbar">
-        <div class="nav-container">
+            <div class="nav-container">
             <div class="nav-logo">
                 <a href="#home">ABOUT ＬＸＹ</a>
             </div>
@@ -26,6 +26,9 @@
                 <span class="bar"></span>
                 <span class="bar"></span>
             </div>
+            <button id="theme-toggle" class="theme-toggle" aria-label="切換主題" title="切換主題">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     </nav>
 
@@ -36,12 +39,9 @@
             <div class="hero-container">
                 <div class="hero-content">
                     <div class="hero-text">
-                        <h1 class="hero-title">你好，我是 </h1><h1><span class="highlight">LXY</span></h1>
+                        <h1 class="hero-title">你好，我是 <span class="highlight">LXY</span></h1>
                         <p class="hero-subtitle">開發者 | UI設計 | 技術愛好者</p>
-                        <p class="hero-description">
-                            熱愛程式設計，專精於前端開發。
-熱愛攝影，但裝備不佳，你也喜歡歡迎聯絡我！
-                        </p>
+                        <p class="hero-description">熱愛程式設計，專精於前端開發。也喜歡攝影，若你也喜歡，歡迎聯絡我！</p>
                         <div class="hero-buttons">
                             <a href="#projects" class="btn btn-secondary">查看作品</a>
                         </div>
@@ -68,8 +68,8 @@
                 <div class="about-content">
                     <div class="about-text">
                         <p>
-                           我是一位國中生，喜歡寫程式、AI寫程式相關的
-                            專精於現代網頁技術、應用程式，包括 HTML kotlin python 等 當然，除了寫程式外，我有些興趣，像是到處去拍照。
+                           我是一位國中生，喜歡寫程式與 AI 相關領域。
+                            專精於現代網頁技術與應用，包括 HTML、Kotlin、Python 等。除了寫程式外，也喜歡四處拍照紀錄生活。
                         </p>
                         <p>
                             除了技術能力外，我也注重使用者體驗設計，相信好的程式碼不僅要功能完整，
@@ -92,7 +92,11 @@
                         <div class="about-location">
                             <div class="location-info">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>台灣南投</span>
+                                <span>目前: 台灣南投</span>
+                            </div>
+                            <div class="location-info">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>出生: 台灣台東</span>
                             </div>
                         </div>
                     </div>
@@ -154,6 +158,12 @@
                     <button id="retry-loading" class="btn btn-primary">重新載入</button>
                 </div>
                 
+                <!-- 空清單狀態 -->
+                <div id="projects-empty" class="projects-error" style="display: none;">
+                    <i class="fas fa-inbox"></i>
+                    <p>目前沒有可顯示的專案</p>
+                </div>
+
                 <!-- 專案滑動器 -->
                 <div id="projects-container" class="projects-container" style="display: none;">
                     <div class="projects-slider">
@@ -203,7 +213,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-text">
-                    <p>&copy; 2024 Yo Codeback. 保留所有權利。</p>
+                    <p>&copy; 2025 Yo Codeback. 保留所有權利。</p>
                 </div>
                 <div class="footer-links">
                     <a href="#home">首頁</a>
