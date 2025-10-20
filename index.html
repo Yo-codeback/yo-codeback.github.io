@@ -19,6 +19,7 @@
                 <a href="#home" class="nav-link">首頁</a>
                 <a href="#about" class="nav-link">關於我</a>
                 <a href="#skills" class="nav-link">技能</a>
+                <a href="#mc-plugins" class="nav-link">MC 插件</a>
                 <a href="#projects" class="nav-link">專案</a>
             </div>
             <div class="nav-toggle" id="nav-toggle">
@@ -40,7 +41,7 @@
                 <div class="hero-content">
                     <div class="hero-text">
                         <h1 class="hero-title">你好，我是 <span class="highlight">LXY</span></h1>
-                        <p class="hero-subtitle">開發者 | UI設計 | 技術愛好者 | MC插件開發者</p>
+                        <p class="hero-subtitle">開發者 | UI設計 | 技術愛好者</p>
                         <p class="hero-description">熱愛程式設計，專精於前端開發。也喜歡攝影，若你也喜歡，歡迎聯絡我！</p>
                         <div class="hero-buttons">
                             <a href="#projects" class="btn btn-secondary">查看作品</a>
@@ -69,11 +70,15 @@
                     <div class="about-text">
                         <p>
                            我是一位國中生，喜歡寫程式與 AI 相關領域。
-                           專精於現代網頁技術與應用，包括 HTML、Kotlin、Python、Mc插件(JAVA) 等。除了寫程式外，也喜歡四處拍照紀錄生活。
+                            專精於現代網頁技術與應用，包括 HTML、Kotlin、Python 等。除了寫程式外，也喜歡四處拍照紀錄生活。
                         </p>
                         <p>
                             除了技術能力外，我也注重使用者體驗設計，相信好的程式碼不僅要功能完整，
                             更要易於維護、擴展。
+                        </p>
+                        <p>
+                            目前擔任 <strong>日出伺服器</strong> 的開發者，歡迎加入 Discord 一起交流：
+                            <a href="https://discord.gg/A5NJ77faYE" target="_blank" rel="noopener">點我一起進來玩Minecraft!</a>
                         </p>
                         <div class="about-stats">
                             <div class="stat">
@@ -134,7 +139,6 @@
                             <span class="skill-item">VPS使用</span>
                             <span class="skill-item">Figma</span>
                             <span class="skill-item">相機(?)</span>
-                            <span class="skill-item">Minecraft 插件(JAVA)</span>
                         </div>
                     </div>
                 </div>
@@ -187,6 +191,28 @@
                     </div>
                 </div>
                 
+            </div>
+        </section>
+
+        <!-- MC 插件區域 -->
+        <section id="mc-plugins" class="plugins">
+            <div class="container">
+                <h2 class="section-title">我開發的 MC 插件</h2>
+                <!-- 插件載入狀態 -->
+                <div id="plugins-loading" class="projects-loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在載入插件...</p>
+                </div>
+                <div id="plugins-error" class="projects-error" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>無法載入插件，請稍後再試</p>
+                </div>
+                <div id="plugins-empty" class="projects-error" style="display: none;">
+                    <i class="fas fa-inbox"></i>
+                    <p>目前沒有可顯示的插件</p>
+                </div>
+                <!-- 動態生成的插件清單 -->
+                <div id="plugins-grid" class="plugins-grid" style="display: none;"></div>
             </div>
         </section>
 

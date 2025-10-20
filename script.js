@@ -346,6 +346,9 @@ window.addEventListener('load', function() {
             this.style.opacity = '1';
         });
     });
+
+    // 載入 MC 插件資料
+    initPlugins();
 });
 
 // 滾動到頂部按鈕
@@ -857,3 +860,95 @@ document.addEventListener('visibilitychange', function() {
         startAutoplay();
     }
 });
+
+// ======================
+// MC 插件：載入與渲染
+// ======================
+async function fetchPlugins() {
+    const res = await fetch('plugins.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+}
+
+function showPluginsLoading() {
+    const l = document.getElementById('plugins-loading');
+    const e = document.getElementById('plugins-error');
+    const n = document.getElementById('plugins-empty');
+    const g = document.getElementById('plugins-grid');
+    if (l) l.style.display = 'block';
+    if (e) e.style.display = 'none';
+    if (n) n.style.display = 'none';
+    if (g) g.style.display = 'none';
+}
+
+function showPluginsError() {
+    const l = document.getElementById('plugins-loading');
+    const e = document.getElementById('plugins-error');
+    const n = document.getElementById('plugins-empty');
+    const g = document.getElementById('plugins-grid');
+    if (l) l.style.display = 'none';
+    if (e) e.style.display = 'block';
+    if (n) n.style.display = 'none';
+    if (g) g.style.display = 'none';
+}
+
+function showPluginsEmpty() {
+    const l = document.getElementById('plugins-loading');
+    const e = document.getElementById('plugins-error');
+    const n = document.getElementById('plugins-empty');
+    const g = document.getElementById('plugins-grid');
+    if (l) l.style.display = 'none';
+    if (e) e.style.display = 'none';
+    if (n) n.style.display = 'block';
+    if (g) g.style.display = 'none';
+}
+
+function showPluginsGrid() {
+    const l = document.getElementById('plugins-loading');
+    const e = document.getElementById('plugins-error');
+    const n = document.getElementById('plugins-empty');
+    const g = document.getElementById('plugins-grid');
+    if (l) l.style.display = 'none';
+    if (e) e.style.display = 'none';
+    if (n) n.style.display = 'none';
+    if (g) g.style.display = 'grid';
+}
+
+function createPluginCard(p) {
+    const card = document.createElement('article');
+    card.className = 'plugin-card';
+    const badges = (p.badges || []).map(b => `<span><i class="fas fa-circle-notch"></i> ${b}</span>`).join('');
+    const links = `
+        ${p.links?.repo ? `<a class="plugin-link" href="${p.links.repo}" target="_blank"><i class="fab fa-github"></i> 程式碼</a>` : ''}
+        ${p.links?.download ? `<a class="plugin-link live-btn" href="${p.links.download}" target="_blank"><i class="fas fa-download"></i> 下載</a>` : ''}
+        ${p.links?.docs ? `<a class="plugin-link" href="${p.links.docs}" target="_blank"><i class="fas fa-file-alt"></i> 文件</a>` : ''}
+    `;
+    card.innerHTML = `
+        <div class="plugin-header">
+            <h3><i class="fas fa-cube"></i> ${p.name}</h3>
+            <span class="plugin-tag">${p.platform || ''}</span>
+        </div>
+        <p class="plugin-desc">${p.description || ''}</p>
+        <div class="plugin-meta">${badges}</div>
+        <div class="plugin-links">${links}</div>
+    `;
+    return card;
+}
+
+async function initPlugins() {
+    try {
+        showPluginsLoading();
+        const list = await fetchPlugins();
+        if (!Array.isArray(list) || list.length === 0) {
+            showPluginsEmpty();
+            return;
+        }
+        const grid = document.getElementById('plugins-grid');
+        grid.innerHTML = '';
+        list.forEach(p => grid.appendChild(createPluginCard(p)));
+        showPluginsGrid();
+    } catch (err) {
+        console.error('載入 plugins.json 失敗:', err);
+        showPluginsError();
+    }
+}

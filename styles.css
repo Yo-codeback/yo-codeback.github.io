@@ -406,6 +406,97 @@ main {
     background: var(--surface);
 }
 
+/* MC 插件區域 */
+.plugins {
+    padding: 5rem 0;
+    background: var(--bg);
+}
+
+.plugins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.plugin-card {
+    background: var(--surface);
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.plugin-card:hover {
+    transform: translateY(-6px);
+}
+
+.plugin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.plugin-header h3 {
+    font-size: 1.2rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.plugin-tag {
+    background: #ecf0f1;
+    color: var(--text);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.plugin-desc {
+    color: var(--muted);
+    margin: 0.5rem 0 0.75rem;
+    line-height: 1.6;
+}
+
+.plugin-meta {
+    display: flex;
+    gap: 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.plugin-links {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.plugin-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.3s ease;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+}
+
+.plugin-link:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.plugins-note {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--muted);
+}
+
 /* 載入狀態 */
 .projects-loading {
     text-align: center;

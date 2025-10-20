@@ -1,0 +1,68 @@
+[
+  {
+    "name": "白粉插件 (毒品模擬插件)",
+    "platform": "Minecraft Java版",
+    "description": "這是一個毒品模擬插件，你可以吸食毒品，並且會有副作用。(模擬毒品效果 現實世界中請勿模仿 吸毒有害身體健康)",
+    "badges": ["指令", "模擬"],
+    "links": {
+      "repo": null,
+      "download": null,
+      "docs": null
+    }
+  },
+  {
+    "name": "Auto Fill 自動填充插件",
+    "platform": "Minecraft Java版",
+    "description": "這是一個自動瑱充插件，讓你可以用鐵錠選取點位，並用包包裡的物品，自動填充所選擇的區域內",
+    "badges": ["指令", "自動填充"],
+    "links": {
+      "repo": null,
+      "download": null,
+      "docs": null
+    }
+  },
+  {
+    "name": "捕捉插件",
+    "platform": "Minecraft Java版",
+    "description": "你可以捕捉生物，並且用他與其他玩家的生物對戰!",
+    "badges": ["對戰", "開發中"],
+    "links": {
+      "repo": null,
+      "download": null,
+      "docs": null
+    }
+  },
+  {
+    "name": "Eat Mineral 礦物食用插件",
+    "platform": "Minecraft Java版",
+    "description": "這是一個礦物食用插件，讓你可以透過 /ceat 將礦物轉為可食用版本，並補充飽食度，甚至可獲得特殊的效果。",
+    "badges": ["指令", "礦物食用"],
+    "links": {
+      "repo": null,
+      "download": null,
+      "docs": null
+    }
+  },
+  {
+    "name": "IceTea 冰茶插件",
+    "platform": "Minecraft Java版",
+    "description": "這是一個冰茶插件，讓你可以透過 冰 水瓶 都不要加/西瓜/紅羅波/南瓜 製作冰茶，並獲得特殊的效果。",
+    "badges": ["飲料", "冰茶"],
+    "links": {
+      "repo": null,
+      "download": null,
+      "docs": null
+    }
+  },
+  {
+    "name": "Task 任務插件",
+    "platform": "Minecraft Java版",
+    "description": "這是一個任務插件，讓你可以透過 /task gui 用GUI介面查看任務，並完成任務獲得獎勵，這些任務甚至可以有等級之分，也可以在任務完成後自動從後台執行指令來獎勵玩家。",
+    "badges": ["自定義", "任務"],
+     "links": {
+      "repo": null,
+      "download": null,
+      "docs": null
+    }
+  }
+]
